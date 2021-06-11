@@ -1,0 +1,4 @@
+.idea
+venv
+mytoken.py
+*__pycache__
