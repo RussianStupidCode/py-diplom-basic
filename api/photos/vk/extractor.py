@@ -14,11 +14,10 @@ class ExtractorVK:
             'owner_id': user_id,
             **params
         }
-        content = self.api.get(method, **default_params).json()
 
+        content = self.api.get(method, **default_params).json()
         if 'error' in content:
             raise ValueError(f'Некорретные данные запроса фотографии: {content["error"]}')
-
         return content
 
 

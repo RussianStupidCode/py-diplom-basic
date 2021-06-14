@@ -21,7 +21,6 @@ class ApiVK:
     def get(self, method: str, **additional_params):
         params = {**self.default_params, **additional_params}
         response = requests.get(f'{ApiVK.__base_url}{method}', params)
-
         if response.status_code != 200:
             raise ValueError(f'Не смог получить данные: код ответа{response.status_code}')
         return response
@@ -35,8 +34,7 @@ if __name__ == "__main__":
         'album_id': 'profile',
         'extended': 1,
     }
+
     response = vk.get(method, **params)
     text = response.json()
-    if 'error' in text:
-        raise ValueError(f'Некорретные данные запроса фотографии: {text}')
     print(text)

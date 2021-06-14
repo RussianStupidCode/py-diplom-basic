@@ -19,7 +19,6 @@ class ExtractorOK:
         content = self.api.get(method, **default_params).json()
         if 'error_msg' in content:
             raise ValueError(f'Некорретные данные запроса фотографии: {content["error_msg"]}')
-
         return content
 
 
