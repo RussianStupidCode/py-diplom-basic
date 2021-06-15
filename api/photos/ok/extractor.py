@@ -1,8 +1,11 @@
-from api import ApiOK
+try:
+    from api import ApiOK
+except ImportError:
+    from api.photos.ok.api import ApiOK
 
 
 class ExtractorOK:
-    def __init__(self, api):
+    def __init__(self, api=ApiOK()):
         if not isinstance(api, ApiOK):
             raise NotImplemented
         self.api = api
@@ -23,11 +26,6 @@ class ExtractorOK:
 
 
 if __name__ == "__main__":
-    try:
-        import mytoken
-        ok = ApiOK(mytoken.ok['access_token'], mytoken.ok['secret_key'], mytoken.ok['app_key'])
-        extractor = ExtractorOK(ok)
-        content = extractor.get_photos(576783256198)
-        print(content)
-    except ImportError:
-        pass
+    extractor = ExtractorOK()
+    content = extractor.get_photos(576783256198)
+    print(content)
