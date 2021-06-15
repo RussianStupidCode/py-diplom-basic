@@ -1,11 +1,14 @@
 import requests
 from hashlib import md5
+APP_KEY = 'CMPHAOJGDIHBABABA'
+SECRET_KEY = '24caa4bdf22b52ac06e036a559f4f98f'
+ACCESS_TOKEN = 'tkn18IqH2P3pCvEhtyNUOPbugvojzK8cY0rndKfVDFZnrp9I9h9DbnfDUy71Ki5SruvLB0'
 
 
 class ApiOK:
     __base_url = 'https://api.ok.ru/fb.do'
 
-    def __init__(self, access_token, secret_key, app_key):
+    def __init__(self, access_token=ACCESS_TOKEN, secret_key=SECRET_KEY, app_key=APP_KEY):
         self.access_token = access_token
         self.secret_key = secret_key
         self.app_key = app_key
@@ -43,13 +46,9 @@ class ApiOK:
 
 
 if __name__ == "__main__":
-    try:
-        import mytoken
+    ok = ApiOK()
+    params = {'fid': 576783256198}
+    response = ok.get('photos.getPhotos', **params)
+    print(response.url)
+    print(response.json())
 
-        ok = ApiOK(mytoken.ok['access_token'], mytoken.ok['secret_key'], mytoken.ok['app_key'])
-        params = {'fid': 576783256198}
-        response = ok.get('photos.getPhotos', **params)
-        print(response.url)
-        print(response.json())
-    except ImportError:
-        pass

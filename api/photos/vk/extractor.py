@@ -1,8 +1,11 @@
-from api import ApiVK
+try:
+    from api import ApiVK
+except ImportError:
+    from api.photos.vk.api import ApiVK
 
 
 class ExtractorVK:
-    def __init__(self, api):
+    def __init__(self, api=ApiVK()):
         if not isinstance(api, ApiVK):
             raise NotImplemented
         self.api = api
@@ -22,9 +25,8 @@ class ExtractorVK:
 
 
 if __name__ == "__main__":
-    vk = ApiVK()
     params = {
         'album_id': 'profile',
     }
-    extractor = ExtractorVK(vk)
+    extractor = ExtractorVK()
     print(extractor.get_photos(552934290, **params))
