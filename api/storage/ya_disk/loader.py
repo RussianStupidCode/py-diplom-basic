@@ -27,7 +27,7 @@ class YaUploader:
         resp = requests.put(f'{YaUploader.__base_url}/resources', headers=self.headers, params=params)
 
         text = resp.json()
-        if resp.status_code != 201:
+        if resp.status_code != 201 and "уже существует" not in text['message']:
             raise ValueError(text['message'])
         return 'Директория создана успешно'
 
@@ -38,9 +38,8 @@ class YaUploader:
         return True
 
     def upload(self, file_name, file_content, ya_dir_path=""):
-        normalize_path = f'{ya_dir_path.strip().strip("/")}'
+        normalize_path = ya_dir_path.strip().strip("/")
         ya_dir_path = f'{normalize_path}/{file_name}'
-        print(ya_dir_path)
 
         try:
             href = self.__get_url_for_load(ya_dir_path)

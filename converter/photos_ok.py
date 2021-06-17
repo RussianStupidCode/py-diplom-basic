@@ -10,7 +10,7 @@ class ConverterOK:
 
     @staticmethod
     def __create_photo_info(photo):
-        date = photo['created_ms']//MILLISECONDS_TO_SECONDS
+        date = photo['created_ms']
         likes_count = photo['like_count']
 
         return PhotoInfo(f'{likes_count}_{date}.png', photo['standard_height'],
