@@ -9,7 +9,7 @@ from converter.photos_ok import ConverterOK
 def load_image(url):
     response = requests.get(url)
     if response.status_code != 200:
-        raise RuntimeError(f"Ошибка при получении изображения по адресу {response.status_code}")
+        raise RuntimeError(f"Ошибка при получении изображения по адресу {url}")
     return response.content
 
 
@@ -29,14 +29,10 @@ class PhotosKeeper:
         try:
             content = load_image(photo.url)
             self.ya_disk.upload(photo.file_name, content, storage_path)
-            result = {
-                'info': photo
-            }
-        except Exception as ex:
-            result = {
-                'info': photo,
-                'error': ex
-            }
+        except (RuntimeError, ValueError) as ex:
+            result['error'] = ex
+        finally:
+            result['info'] = photo
         return result
 
     def __save_photos(self, refined_photos, storage_path):
@@ -48,15 +44,17 @@ class PhotosKeeper:
             info = self.__save_photo(photo, storage_path)
 
             if 'error' in info:
+                fails.append(info)
                 print(f"ошибка сохранения фото {info['error']}")
             else:
+                success.append(info)
                 print(f"Фото сохранено успешно")
 
         return success, fails
 
-    def is_storage_valid(self):
+    def check_storage_valid(self):
         if self.ya_disk is None or not self.ya_disk.is_valid_token():
-            raise ValueError(f"Не инициализировано место хранения фото")
+            raise ValueError(f"Не инициализировано хранилище фотографий")
 
     def save_yandex_token(self, token):
         self.ya_disk = YaUploader(token)
@@ -64,21 +62,20 @@ class PhotosKeeper:
             raise ValueError(f"Невалидный токен для яндекс диска {token}")
 
     def query_save_photos_vk(self, id_user, photo_count=5):
-        params = {
-            'album_id': 'profile',
-        }
-        photos = self.vk.get_photos(id_user, **params)
+        self.check_storage_valid()
+
+        photos = self.vk.get_photos(id_user)
         refined_photos = ConverterVK.convert(photos, photo_count)
         storage_path = f"vk_{id_user}"
-
         self.ya_disk.make_directory(storage_path)
         return self.__save_photos(refined_photos, storage_path)
 
     def query_save_photos_ok(self, id_user, photo_count=5):
-        photos = self.ok.get_photos(576783256198)
+        self.check_storage_valid()
+
+        photos = self.ok.get_photos(id_user)
         refined_photos = ConverterOK.convert(photos, photo_count)
         storage_path = f"ok_{id_user}"
-
         self.ya_disk.make_directory(storage_path)
         return self.__save_photos(refined_photos, storage_path)
 

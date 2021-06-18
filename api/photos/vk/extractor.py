@@ -13,6 +13,7 @@ class ExtractorVK:
     def get_photos(self, user_id: int, **params):
         method = 'photos.get'
         default_params = {
+            'album_id': 'profile',
             'extended': 1,
             'owner_id': user_id,
             **params

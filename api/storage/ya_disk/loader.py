@@ -57,12 +57,3 @@ class YaUploader:
         if resp.status_code != 200:
             raise ValueError(f'ошибка при ответе: {resp.status_code}')
         return resp.json()
-
-
-if __name__ == "__main__":
-    try:
-        import mytoken
-        loader = YaUploader(mytoken.YA_TOKEN)
-        print(loader.disk_info())
-    except ImportError:
-        pass
