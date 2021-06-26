@@ -1,4 +1,5 @@
 import sys
+import json
 from keeper import PhotosKeeper
 
 
@@ -23,6 +24,21 @@ class InputHandler:
         return user_id, photos_count
 
     @staticmethod
+    def __to_json(photos):
+        return json.dumps([photo['info'].to_dict() for photo in photos], indent=2)
+
+    @staticmethod
+    def __out_message(success, fails):
+        if len(success) > 0:
+            print("Успешно загруженные файлы: \n")
+            dump = InputHandler.__to_json(success)
+            print(dump)
+        if len(fails) > 0:
+            print("Файлы которые не смогли загрузиться: \n")
+            dump = InputHandler.__to_json(fails)
+            print(dump)
+
+    @staticmethod
     def exit():
         sys.exit()
 
@@ -39,11 +55,13 @@ class InputHandler:
 
     def save_vk(self):
         user_id, photos_count = InputHandler.__get_user_input()
-        self.keeper.query_save_photos_vk(user_id, photos_count)
+        success, fails = self.keeper.query_save_photos_vk(user_id, photos_count)
+        InputHandler.__out_message(success, fails)
 
     def save_ok(self):
         user_id, photos_count = InputHandler.__get_user_input()
-        self.keeper.query_save_photos_ok(user_id, photos_count)
+        success, fails = self.keeper.query_save_photos_ok(user_id, photos_count)
+        InputHandler.__out_message(success, fails)
 
     def set_ya_token(self):
         token = input('Введите токен: ')

@@ -10,3 +10,6 @@ class PhotoInfo:
     def __str__(self):
         return str(self.__dict__)
 
+    def to_dict(self):
+        return self.__dict__
+
